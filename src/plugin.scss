@@ -1,0 +1,18 @@
+// Sass for videojs-vtt-thumbnails
+
+.video-js {
+
+  // This class is added to the video.js element by the plugin by default.
+  &.vjs-vtt-thumbnails {
+    display: block;
+  }
+
+  .vjs-vtt-thumbnail-display {
+    position: absolute;
+    transition: transform .1s, opacity .2s;
+    bottom: 85%;
+    pointer-events: none;
+    box-shadow: 0 0 7px rgba(0,0,0,.6);
+  }
+
+}
