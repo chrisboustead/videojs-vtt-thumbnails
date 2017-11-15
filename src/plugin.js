@@ -24,8 +24,8 @@ const registerPlugin = videojs.registerPlugin || videojs.plugin
  *           A plain object containing options for the plugin.
  */
 const onPlayerReady = (player, options) => {
-  player.addClass('vjs-vtt-thumbnails')
-  new vttThumbnailsPlugin(player, options)
+  player.addClass('vjs-vtt-thumbnails');
+  player.vttThumbnails = new vttThumbnailsPlugin(player, options)
 }
 
 /**
@@ -68,7 +68,20 @@ class vttThumbnailsPlugin {
   constructor (player, options) {
     this.player = player
     this.options = options
-    this.initializeThumbnails()
+    this.initializeThumbnails();
+    return this;
+  }
+
+  src(source){
+    delete this.vttData;
+    delete this.thumbnailHolder;
+    delete this.lastStyle;
+    this.progressBar.removeEventListener('mouseenter',() => { return this.onBarMouseenter() });
+    this.progressBar.removeEventListener('mouseleave',() => { return this.onBarMouseleave() });
+    this.progressBar.removeEventListener('mousemove',this.onBarMousemove);
+    delete this.progressBar;
+    this.options.src = source;
+    this.initializeThumbnails();
   }
 
   /**
@@ -222,12 +235,28 @@ class vttThumbnailsPlugin {
   }
 
   getFullyQualifiedUrl (path, base) {
-    if (!path.match(/\/\//i)) {
+    if (path.indexOf('//') >= 0) {
+      // We have a fully qualified path.
+      return path
+    }
+    if (base.indexOf('//') === 0) {
+      // We don't have a fully qualified path, but need to
+      // be careful with trimming.
+      return [
+        base.replace(/\/$/gi, ''),
+        this.trim(path, '/')
+      ].join('/')
+    }
+    if (base.indexOf('//') > 0) {
+      // We don't have a fully qualified path, and should
+      // trim both sides of base and path.
       return [
         this.trim(base, '/'),
         this.trim(path, '/')
       ].join('/')
     }
+
+    // If all else fails.
     return path
   }
 
@@ -250,8 +279,14 @@ class vttThumbnailsPlugin {
     const cssObj = {}
 
     // If there isn't a protocol, use the VTT source URL.
-    const baseSplit = this.options.src.split(/([^\/]*)$/gi)
-    vttImageDef = this.getFullyQualifiedUrl(vttImageDef, baseSplit[0])
+    let baseSplit
+    if (this.options.src.indexOf('//') >= 0) {
+      baseSplit = this.options.src.split(/([^\/]*)$/gi).shift()
+    } else {
+      baseSplit = this.getBaseUrl() + this.options.src.split(/([^\/]*)$/gi).shift()
+    }
+
+    vttImageDef = this.getFullyQualifiedUrl(vttImageDef, baseSplit)
 
     if (!vttImageDef.match(/#xywh=/i)) {
       cssObj.background = 'url("' + vttImageDef + '")'
