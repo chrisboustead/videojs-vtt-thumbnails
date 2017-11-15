@@ -84,7 +84,7 @@ class vttThumbnailsPlugin {
   }
 
   resetPlugin() {
-    this.thumbnailHolder.parentNode.removeChild(this.thumbnailHolder);
+    this.thumbnailHolder && this.thumbnailHolder.parentNode.removeChild(this.thumbnailHolder);
     this.progressBar.removeEventListener('mouseenter', this.registeredEvents.progressBarMouseEnter);
     this.progressBar.removeEventListener('mouseleave', this.registeredEvents.progressBarMouseLeave);
     this.progressBar.removeEventListener('mousemove', this.registeredEvents.progressBarMouseMove);
