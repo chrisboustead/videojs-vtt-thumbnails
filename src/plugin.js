@@ -69,6 +69,7 @@ class vttThumbnailsPlugin {
     this.player = player
     this.options = options
     this.initializeThumbnails();
+    this.registeredEvents = {};
     return this;
   }
 
@@ -83,9 +84,12 @@ class vttThumbnailsPlugin {
   }
 
   resetPlugin() {
-    this.progressBar.removeEventListener('mouseenter',() => { return this.onBarMouseenter() });
-    this.progressBar.removeEventListener('mouseleave',() => { return this.onBarMouseleave() });
-    this.progressBar.removeEventListener('mousemove',this.onBarMousemove);
+    this.progressBar.removeEventListener('mouseenter', this.registeredEvents.progressBarMouseEnter);
+    this.progressBar.removeEventListener('mouseleave', this.registeredEvents.progressBarMouseLeave);
+    this.progressBar.removeEventListener('mousemove', this.registeredEvents.progressBarMouseMove);
+    delete this.registeredEvents.progressBarMouseEnter;
+    delete this.registeredEvents.progressBarMouseLeave;
+    delete this.registeredEvents.progressBarMouseMove;
     delete this.progressBar;
     delete this.vttData;
     delete this.thumbnailHolder;
@@ -156,18 +160,23 @@ class vttThumbnailsPlugin {
     this.progressBar.appendChild(thumbHolder)
     this.thumbnailHolder = thumbHolder
     mouseDisplay.classList.add('vjs-hidden')
-    this.progressBar.addEventListener('mouseenter', () => { return this.onBarMouseenter() })
-    this.progressBar.addEventListener('mouseleave', () => { return this.onBarMouseleave() })
+    this.registeredEvents.progressBarMouseEnter = () => { return this.onBarMouseenter() };
+    this.registeredEvents.progressBarMouseLeave = () => { return this.onBarMouseleave() };
+    this.progressBar.addEventListener('mouseenter', this.registeredEvents.progressBarMouseEnter)
+    this.progressBar.addEventListener('mouseleave', this.registeredEvents.progressBarMouseLeave)
   }
 
   onBarMouseenter () {
     this.mouseMoveCallback = (e) => { this.onBarMousemove(e) }
-    this.progressBar.addEventListener('mousemove', this.mouseMoveCallback)
+    this.registeredEvents.progressBarMouseMove = this.mouseMoveCallback;
+    this.progressBar.addEventListener('mousemove', this.registeredEvents.progressBarMouseMove)
     this.showThumbnailHolder()
   }
 
   onBarMouseleave () {
-    this.progressBar.removeEventListener('mousemove', this.mouseMoveCallback)
+    if(this.registeredEvents.progressBarMouseMove) {
+      this.progressBar.removeEventListener('mousemove', this.registeredEvents.progressBarMouseMove)
+    }
     this.hideThumbnailHolder()
   }
 
