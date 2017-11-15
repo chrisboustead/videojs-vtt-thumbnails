@@ -73,15 +73,23 @@ class vttThumbnailsPlugin {
   }
 
   src(source){
-    delete this.vttData;
-    delete this.thumbnailHolder;
-    delete this.lastStyle;
+    this.resetPlugin();
+    this.options.src = source;
+    this.initializeThumbnails();
+  }
+
+  detach() {
+    this.resetPlugin();
+  }
+
+  resetPlugin() {
     this.progressBar.removeEventListener('mouseenter',() => { return this.onBarMouseenter() });
     this.progressBar.removeEventListener('mouseleave',() => { return this.onBarMouseleave() });
     this.progressBar.removeEventListener('mousemove',this.onBarMousemove);
     delete this.progressBar;
-    this.options.src = source;
-    this.initializeThumbnails();
+    delete this.vttData;
+    delete this.thumbnailHolder;
+    delete this.lastStyle;
   }
 
   /**
