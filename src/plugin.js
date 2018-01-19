@@ -337,7 +337,7 @@ class vttThumbnailsPlugin {
     return parseInt((timestampParts.hours * (60 * 60)) +
       (timestampParts.minutes * 60) +
       timestampParts.seconds +
-      (timestampParts.milliseconds * 1000))
+      (timestampParts.milliseconds / 1000))
   }
 
   trim (str, charlist) {
