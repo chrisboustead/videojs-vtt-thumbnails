@@ -188,9 +188,15 @@ class vttThumbnailsPlugin {
     this.hideThumbnailHolder()
   }
 
+  getXCoord(bar, mouseX) {
+    const rect = bar.getBoundingClientRect();
+    const docEl = document.documentElement;
+    return mouseX - ( rect.left + (window.pageXOffset || docEl.scrollLeft || 0));
+  }
+
   onBarMousemove (event) {
     this.updateThumbnailStyle(
-      event.clientX - (this.progressBar.offsetLeft + this.player.el().offsetLeft),
+      this.getXCoord(this.progressBar, event.clientX),
       this.progressBar.offsetWidth
     )
   }
