@@ -68,6 +68,7 @@ class vttThumbnailsPlugin {
   constructor (player, options) {
     this.player = player
     this.options = options
+    this.listenForDurationChange();
     this.initializeThumbnails();
     this.registeredEvents = {};
     return this;
@@ -95,6 +96,12 @@ class vttThumbnailsPlugin {
     delete this.vttData;
     delete this.thumbnailHolder;
     delete this.lastStyle;
+  }
+
+  listenForDurationChange() {
+    this.player.on('durationchange', () => {
+
+    })
   }
 
   /**
@@ -183,7 +190,7 @@ class vttThumbnailsPlugin {
 
   onBarMousemove (event) {
     this.updateThumbnailStyle(
-      event.clientX - this.progressBar.offsetLeft,
+      event.clientX - (this.progressBar.offsetLeft + this.player.el().offsetLeft),
       this.progressBar.offsetWidth
     )
   }
@@ -209,10 +216,13 @@ class vttThumbnailsPlugin {
     const duration = this.player.duration()
     const time = ((1 - ((width - x) / width))) * duration
     const currentStyle = this.getStyleForTime(time)
+
     if (!currentStyle) {
       return this.hideThumbnailHolder()
     }
+
     const xPos = ((1 - ((width - x) / width))) * width
+
     this.thumbnailHolder.style.transform = 'translateX(' + xPos + 'px)'
     this.thumbnailHolder.style.marginLeft = '-' + (parseInt(currentStyle.width) / 2) + 'px'
 

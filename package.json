@@ -1,12 +1,12 @@
 {
   "name": "videojs-vtt-thumbnails",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Display thumnails on progress bar hover, driven by external VTT files.",
   "main": "dist/videojs-vtt-thumbnails.cjs.js",
   "module": "dist/videojs-vtt-thumbnails.es.js",
-  "repository" : {
-    "type" : "git",
-    "url" : "https://github.com/chrisboustead/videojs-vtt-thumbnails.git"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chrisboustead/videojs-vtt-thumbnails.git"
   },
   "generator-videojs-plugin": {
     "version": "5.0.3"
