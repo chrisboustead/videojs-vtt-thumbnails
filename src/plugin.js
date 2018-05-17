@@ -167,7 +167,9 @@ class vttThumbnailsPlugin {
     thumbHolder.setAttribute('class', 'vjs-vtt-thumbnail-display')
     this.progressBar.appendChild(thumbHolder)
     this.thumbnailHolder = thumbHolder
-    mouseDisplay.classList.add('vjs-hidden')
+    if(mouseDisplay) {
+      mouseDisplay.classList.add('vjs-hidden')
+    }
     this.registeredEvents.progressBarMouseEnter = () => { return this.onBarMouseenter() };
     this.registeredEvents.progressBarMouseLeave = () => { return this.onBarMouseleave() };
     this.progressBar.addEventListener('mouseenter', this.registeredEvents.progressBarMouseEnter)

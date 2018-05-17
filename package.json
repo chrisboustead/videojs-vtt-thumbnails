@@ -1,6 +1,6 @@
 {
   "name": "videojs-vtt-thumbnails",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Display thumnails on progress bar hover, driven by external VTT files.",
   "main": "dist/videojs-vtt-thumbnails.cjs.js",
   "module": "dist/videojs-vtt-thumbnails.es.js",
