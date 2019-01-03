@@ -1,6 +1,6 @@
 {
   "name": "videojs-vtt-thumbnails",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Display thumnails on progress bar hover, driven by external VTT files.",
   "main": "dist/videojs-vtt-thumbnails.cjs.js",
   "module": "dist/videojs-vtt-thumbnails.es.js",
@@ -71,7 +71,7 @@
   "dependencies": {
     "global": "^4.3.2",
     "request": "^2.83.0",
-    "video.js": "^5.19.2 || ^6.6.0"
+    "video.js": "^5.19.2 || ^6.6.0 || ^7.2.0"
   },
   "devDependencies": {
     "babel-plugin-external-helpers": "^6.22.0",
