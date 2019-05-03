@@ -161,15 +161,15 @@ class vttThumbnailsPlugin {
   }
 
   setupThumbnailElement (data) {
-    const mouseDisplay = this.player.$('.vjs-mouse-display')
     this.progressBar = this.player.$('.vjs-progress-control')
     const thumbHolder = document.createElement('div')
     thumbHolder.setAttribute('class', 'vjs-vtt-thumbnail-display')
     this.progressBar.appendChild(thumbHolder)
     this.thumbnailHolder = thumbHolder
-    if(mouseDisplay) {
-      mouseDisplay.classList.add('vjs-hidden')
-    }
+    // const mouseDisplay = this.player.$('.vjs-mouse-display');
+    // if(mouseDisplay) {
+    //   mouseDisplay.classList.add('vjs-hidden')
+    // }
     this.registeredEvents.progressBarMouseEnter = () => { return this.onBarMouseenter() };
     this.registeredEvents.progressBarMouseLeave = () => { return this.onBarMouseleave() };
     this.progressBar.addEventListener('mouseenter', this.registeredEvents.progressBarMouseEnter)
