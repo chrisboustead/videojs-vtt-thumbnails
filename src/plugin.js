@@ -198,7 +198,7 @@ class vttThumbnailsPlugin {
 
   onBarMousemove (event) {
     this.updateThumbnailStyle(
-      this.getXCoord(this.progressBar, event.clientX),
+      videojs.dom.getPointerPosition(this.progressBar, event).x,
       this.progressBar.offsetWidth
     )
   }
@@ -220,16 +220,16 @@ class vttThumbnailsPlugin {
     this.thumbnailHolder.style.opacity = '0'
   }
 
-  updateThumbnailStyle (x, width) {
+  updateThumbnailStyle (percent, width) {
     const duration = this.player.duration()
-    const time = ((1 - ((width - x) / width))) * duration
+    const time = percent * duration
     const currentStyle = this.getStyleForTime(time)
 
     if (!currentStyle) {
       return this.hideThumbnailHolder()
     }
 
-    const xPos = ((1 - ((width - x) / width))) * width
+    const xPos = percent * width
 
     this.thumbnailHolder.style.transform = 'translateX(' + xPos + 'px)'
     this.thumbnailHolder.style.marginLeft = '-' + (parseInt(currentStyle.width) / 2) + 'px'
