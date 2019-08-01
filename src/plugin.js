@@ -25,7 +25,7 @@ const registerPlugin = videojs.registerPlugin || videojs.plugin
  */
 const onPlayerReady = (player, options) => {
   player.addClass('vjs-vtt-thumbnails');
-  player.vttThumbnails = new vttThumbnailsPlugin(player, options)
+  player.vttThumbnails = new vttThumbnailsPlugin(player, options);
 }
 
 /**
@@ -230,9 +230,19 @@ class vttThumbnailsPlugin {
     }
 
     const xPos = percent * width
-
-    this.thumbnailHolder.style.transform = 'translateX(' + xPos + 'px)'
-    this.thumbnailHolder.style.marginLeft = '-' + (parseInt(currentStyle.width) / 2) + 'px'
+    const thumbnailWidth=parseInt(currentStyle.width)
+    const halfthumbnailWidth=  thumbnailWidth>> 1
+    const marginRight= width-(xPos+halfthumbnailWidth);
+    const marginLeft= xPos-halfthumbnailWidth;
+    if(marginLeft >0 && marginRight>0) {
+      this.thumbnailHolder.style.transform = 'translateX(' + (xPos-halfthumbnailWidth) + 'px)'
+    }
+    else if(marginLeft <= 0) {
+      this.thumbnailHolder.style.transform = 'translateX(' + 0 + 'px)'
+    }
+    else if(marginRight <=0 ) {
+      this.thumbnailHolder.style.transform = 'translateX(' +  (width-thumbnailWidth) + 'px)'
+    }
 
     if (this.lastStyle && this.lastStyle === currentStyle) {
       return
