@@ -5,6 +5,9 @@ import { version as VERSION } from '../package.json'
 // Default options for the plugin.
 const defaults = {}
 
+// Cache for image elements
+var cache = {}
+
 // Cross-compatibility for Video.js 5 and 6.
 const registerPlugin = videojs.registerPlugin || videojs.plugin
 // const dom = videojs.dom || videojs;
@@ -207,6 +210,13 @@ class vttThumbnailsPlugin {
     for (let i = 0; i < this.vttData.length; ++i) {
       let item = this.vttData[i]
       if (time >= item.start && time < item.end) {
+        // Cache miss
+        if (item.css.url && !cache[item.css.url]) {
+          let image = new Image();
+          image.src = item.css.url;
+          cache[item.css.url] = image;
+        }
+
         return item.css
       }
     }
@@ -343,6 +353,7 @@ class vttThumbnailsPlugin {
     cssObj.background = 'url("' + imageProps.image + '") no-repeat -' + imageProps.x + 'px -' + imageProps.y + 'px'
     cssObj.width = imageProps.w + 'px'
     cssObj.height = imageProps.h + 'px'
+    cssObj.url = imageProps.image
 
     return cssObj
   }
