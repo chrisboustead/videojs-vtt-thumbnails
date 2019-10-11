@@ -25,7 +25,7 @@ const registerPlugin = videojs.registerPlugin || videojs.plugin
  */
 const onPlayerReady = (player, options) => {
   player.addClass('vjs-vtt-thumbnails');
-  player.vttThumbnails = new vttThumbnailsPlugin(player, options)
+  player.vttThumbnails = new vttThumbnailsPlugin(player, options);
 }
 
 /**
@@ -198,7 +198,7 @@ class vttThumbnailsPlugin {
 
   onBarMousemove (event) {
     this.updateThumbnailStyle(
-      this.getXCoord(this.progressBar, event.clientX),
+      videojs.dom.getPointerPosition(this.progressBar, event).x,
       this.progressBar.offsetWidth
     )
   }
@@ -220,19 +220,29 @@ class vttThumbnailsPlugin {
     this.thumbnailHolder.style.opacity = '0'
   }
 
-  updateThumbnailStyle (x, width) {
+  updateThumbnailStyle (percent, width) {
     const duration = this.player.duration()
-    const time = ((1 - ((width - x) / width))) * duration
+    const time = percent * duration
     const currentStyle = this.getStyleForTime(time)
 
     if (!currentStyle) {
       return this.hideThumbnailHolder()
     }
 
-    const xPos = ((1 - ((width - x) / width))) * width
-
-    this.thumbnailHolder.style.transform = 'translateX(' + xPos + 'px)'
-    this.thumbnailHolder.style.marginLeft = '-' + (parseInt(currentStyle.width) / 2) + 'px'
+    const xPos = percent * width
+    const thumbnailWidth=parseInt(currentStyle.width)
+    const halfthumbnailWidth=  thumbnailWidth>> 1
+    const marginRight= width-(xPos+halfthumbnailWidth);
+    const marginLeft= xPos-halfthumbnailWidth;
+    if(marginLeft >0 && marginRight>0) {
+      this.thumbnailHolder.style.transform = 'translateX(' + (xPos-halfthumbnailWidth) + 'px)'
+    }
+    else if(marginLeft <= 0) {
+      this.thumbnailHolder.style.transform = 'translateX(' + 0 + 'px)'
+    }
+    else if(marginRight <=0 ) {
+      this.thumbnailHolder.style.transform = 'translateX(' +  (width-thumbnailWidth) + 'px)'
+    }
 
     if (this.lastStyle && this.lastStyle === currentStyle) {
       return
