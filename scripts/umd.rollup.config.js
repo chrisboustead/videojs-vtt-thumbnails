@@ -4,24 +4,24 @@
  *
  * This module DOES include its dependencies.
  */
-import babel from 'rollup-plugin-babel';
-import commonjs from 'rollup-plugin-commonjs';
-import json from 'rollup-plugin-json';
-import resolve from 'rollup-plugin-node-resolve';
+import babel from '@rollup/plugin-babel';
+import commonjs from '@rollup/plugin-commonjs';
+import json from '@rollup/plugin-json';
+import resolve from '@rollup/plugin-node-resolve';
 
 export default {
-  name: 'videojsVttThumbnails',
   input: 'src/plugin.js',
   output: {
+    name: 'videojsVttThumbnails',
     file: 'dist/videojs-vtt-thumbnails.js',
-    format: 'umd'
+    format: 'umd',
+    globals: {
+      'video.js': 'videojs'
+    }
   },
   external: [
     'video.js'
   ],
-  globals: {
-    'video.js': 'videojs'
-  },
   plugins: [
     resolve({
       browser: true,
@@ -36,14 +36,13 @@ export default {
       babelrc: false,
       exclude: 'node_modules/**',
       presets: [
-        ['es2015', {
+        ['@babel/preset-env', {
           loose: true,
           modules: false
         }]
       ],
       plugins: [
-        'external-helpers',
-        'transform-object-assign'
+        '@babel/transform-object-assign'
       ]
     })
   ]
