@@ -280,8 +280,8 @@ class vttThumbnailsPlugin {
         let vttCssDef = this.getVttCss(vttImageDef)
 
         processedVtts.push({
-          start: this.getSecondsFromTimestamp(vttTimeStart),
-          end: this.getSecondsFromTimestamp(vttTimeEnd),
+          start: this.getMillisecondsFromTimestamp(vttTimeStart),
+          end: this.getMillisecondsFromTimestamp(vttTimeEnd),
           css: vttCssDef
         })
 
@@ -371,12 +371,12 @@ class vttThumbnailsPlugin {
 
   }
 
-  getSecondsFromTimestamp (timestamp) {
+  getMillisecondsFromTimestamp (timestamp) {
     const timestampParts = this.doconstructTimestamp(timestamp)
-    return parseInt((timestampParts.hours * (60 * 60)) +
+    return (timestampParts.hours * (60 * 60)) +
       (timestampParts.minutes * 60) +
       timestampParts.seconds +
-      (timestampParts.milliseconds / 1000))
+      (timestampParts.milliseconds / 1000);
   }
 
   trim (str, charlist) {
