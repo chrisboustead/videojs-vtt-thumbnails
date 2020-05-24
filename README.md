@@ -15,6 +15,7 @@ Note: Plugin hides the default skin's mouse display timestamp on hover.
   - [`<script>` Tag](#script-tag)
   - [Browserify/CommonJS](#browserifycommonjs)
   - [RequireJS/AMD](#requirejsamd)
+  - [Options](#options)
 - [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -69,6 +70,21 @@ require(['video.js', 'videojs-vtt-thumbnails'], function(videojs) {
   var player = videojs('my-video');
 
   player.vttThumbnails();
+});
+```
+
+### Options
+
+| Option  | Use | Default | Examples |
+| ------------- | ------------- | ------------- | ------------- |
+| `src`  | The VTT source file fro your thumbnails |  | `'example/thumbs.vtt'` |
+| `scale` | The scale factor applied to the thumbnail display | `1` | `0.5`, `1` |
+
+```js
+var player = videojs('my-video');
+player.vttThumbnails({
+  src: 'example/thumbs.vtt',
+  scale: 0.5
 });
 ```
 
