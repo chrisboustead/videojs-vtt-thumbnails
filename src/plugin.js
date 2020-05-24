@@ -157,7 +157,7 @@ class vttThumbnailsPlugin {
    * @param url
    * @return {Promise}
    */
-  getVttFil(url) {
+  getVttFile(url) {
     return new Promise((resolve, reject) => {
       // eslint-disable-next-line no-undef
       const req = new XMLHttpRequest();
