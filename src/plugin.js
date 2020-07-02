@@ -152,6 +152,7 @@ class vttThumbnailsPlugin {
       }
       req.addEventListener('load', this.vttFileLoaded)
       req.open('GET', url)
+      req.overrideMimeType('text/plain; charset=utf-8')
       req.send()
     })
   }
