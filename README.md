@@ -15,6 +15,9 @@ Note: Plugin hides the default skin's mouse display timestamp on hover.
   - [`<script>` Tag](#script-tag)
   - [Browserify/CommonJS](#browserifycommonjs)
   - [RequireJS/AMD](#requirejsamd)
+- [Options](#options)
+  - [Example](#example)
+  - [Available Options](#available-options)
 - [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -71,6 +74,23 @@ require(['video.js', 'videojs-vtt-thumbnails'], function(videojs) {
   player.vttThumbnails();
 });
 ```
+
+## Options
+
+Options are passed in the same object as the source location.
+
+### Example
+
+```js
+  var player = videojs('my-video');
+  player.vttThumbnails({
+    src: 'example/thumbs.vtt',
+    showTimestamp: true
+  });
+```
+### Available Options
+
+- `showTimestamp` (Boolean, Default: false) - Disables the timestamp that is shown on hover.
 
 ## License
 
