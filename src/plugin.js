@@ -181,7 +181,12 @@ class vttThumbnailsPlugin {
   }
 
   setupThumbnailElement(data) {
-    const mouseDisplay = this.player.$('.vjs-mouse-display');
+    let mouseDisplay = null;
+
+    if (!this.options.showTimestamp) {
+      mouseDisplay = this.player.$('.vjs-mouse-display');
+    }
+
     // eslint-disable-next-line no-undef
     const thumbHolder = document.createElement('div');
 
@@ -190,7 +195,7 @@ class vttThumbnailsPlugin {
     this.progressBar.appendChild(thumbHolder);
     this.thumbnailHolder = thumbHolder;
 
-    if (mouseDisplay) {
+    if (mouseDisplay && !this.options.showTimestamp) {
       mouseDisplay.classList.add('vjs-hidden');
     }
 
