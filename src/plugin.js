@@ -287,7 +287,9 @@ class vttThumbnailsPlugin {
     const marginRight = width - (xPos + halfthumbnailWidth);
     const marginLeft = xPos - halfthumbnailWidth;
 
-    if (marginLeft > 0 && marginRight > 0) {
+    if (width < thumbnailWidth) {
+      this.thumbnailHolder.style.transform = 'translateX(' + (((thumbnailWidth - width) / 2) * -1) + 'px)';
+    } else if (marginLeft > 0 && marginRight > 0) {
       this.thumbnailHolder.style.transform = 'translateX(' + (xPos - halfthumbnailWidth) + 'px)';
     } else if (marginLeft <= 0) {
       this.thumbnailHolder.style.transform = 'translateX(' + 0 + 'px)';
