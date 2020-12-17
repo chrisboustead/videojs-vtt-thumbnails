@@ -310,8 +310,8 @@ class vttThumbnailsPlugin {
 
   processVtt(data) {
     const processedVtts = [];
-    if (data.match(/[\n\n]/i)) {
-      data = data.replace('\n', '\r\n');
+    if (data.match(/\r\n/i)) {
+      data = data.replace('\r\n', '\n');
     }
     const vttDefinitions = data.split(/[\r\n][\r\n]/i);
 
