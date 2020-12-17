@@ -310,7 +310,7 @@ class vttThumbnailsPlugin {
 
   processVtt(data) {
     const processedVtts = [];
-    const vttDefinitions = data.split(/[\r\n][\r\n]/i);
+    const vttDefinitions = data.split(/[\r\n][\r\n]|[\n][\n]/i);
 
     vttDefinitions.forEach((vttDef) => {
       if (vttDef.match(/([0-9]{2}:)?([0-9]{2}:)?[0-9]{2}(.[0-9]{3})?( ?--> ?)([0-9]{2}:)?([0-9]{2}:)?[0-9]{2}(.[0-9]{3})?[\r\n]{1}.*/gi)) {
