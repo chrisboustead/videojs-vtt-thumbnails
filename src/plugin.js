@@ -1,11 +1,11 @@
-import videojs from 'video.js'
-import { version as VERSION } from '../package.json'
+import videojs from 'video.js';
+import { version as VERSION } from '../package.json';
 // import request from 'request';
 // Default options for the plugin.
-const defaults = {}
+const defaults = {};
 
 // Cross-compatibility for Video.js 5 and 6.
-const registerPlugin = videojs.registerPlugin || videojs.plugin
+const registerPlugin = videojs.registerPlugin || videojs.plugin;
 // const dom = videojs.dom || videojs;
 
 /**
@@ -24,8 +24,8 @@ const registerPlugin = videojs.registerPlugin || videojs.plugin
  */
 const onPlayerReady = (player, options) => {
   player.addClass('vjs-vtt-thumbnails');
-  player.vttThumbnails = new vttThumbnailsPlugin(player, options);
-}
+  player.vttThumbnails = new VttThumbnailsPlugin(player, options);
+};
 
 /**
  * A video.js plugin.
@@ -39,11 +39,11 @@ const onPlayerReady = (player, options) => {
  * @param    {Object} [options={}]
  *           An object of options left to the plugin author to define.
  */
-const vttThumbnails = function (options) {
+const vttThumbnails = function(options) {
   this.ready(() => {
-    onPlayerReady(this, videojs.mergeOptions(defaults, options))
-  })
-}
+    onPlayerReady(this, videojs.mergeOptions(defaults, options));
+  });
+};
 
 /**
  * VTT Thumbnails class.
@@ -64,16 +64,16 @@ class vttThumbnailsPlugin {
    * @param    {Object} [options={}]
    *           A plain object containing options for the plugin.
    */
-  constructor (player, options) {
-    this.player = player
-    this.options = options
+  constructor(player, options) {
+    this.player = player;
+    this.options = options;
     this.listenForDurationChange();
     this.initializeThumbnails();
     this.registeredEvents = {};
     return this;
   }
 
-  src(source){
+  src(source) {
     this.resetPlugin();
     this.options.src = source;
     this.initializeThumbnails();
@@ -84,7 +84,8 @@ class vttThumbnailsPlugin {
   }
 
   resetPlugin() {
-    this.thumbnailHolder && this.thumbnailHolder.parentNode.removeChild(this.thumbnailHolder);
+    this.thumbnailHolder && this.thumbnailHolder
+      .parentNode.removeChild(this.thumbnailHolder);
     this.progressBar && this.progressBar.removeEventListener('mouseenter', this.registeredEvents.progressBarMouseEnter);
     this.progressBar && this.progressBar.removeEventListener('mouseleave', this.registeredEvents.progressBarMouseLeave);
     this.progressBar && this.progressBar.removeEventListener('mousemove', this.registeredEvents.progressBarMouseMove);
@@ -311,65 +312,65 @@ class vttThumbnailsPlugin {
   }
 
   getPropsFromDef (def) {
-    const imageDefSplit = def.split(/#xywh=/i)
-    const imageUrl = imageDefSplit[0]
-    const imageCoords = imageDefSplit[1]
-    const splitCoords = imageCoords.match(/[0-9]+/gi)
+    const imageDefSplit = def.split(/#xywh=/i);
+    const imageUrl = imageDefSplit[0];
+    const imageCoords = imageDefSplit[1];
+    const splitCoords = imageCoords.match(/[0-9]+/gi);
     return {
       x: splitCoords[0],
       y: splitCoords[1],
       w: splitCoords[2],
       h: splitCoords[3],
       image: imageUrl
-    }
+    };
   }
 
   getVttCss (vttImageDef) {
 
-    const cssObj = {}
+    const cssObj = {};
 
     // If there isn't a protocol, use the VTT source URL.
-    let baseSplit
+    let baseSplit;
     if (this.options.src.indexOf('//') >= 0) {
-      baseSplit = this.options.src.split(/([^\/]*)$/gi).shift()
+      baseSplit = this.options.src.split(/([^\/]*)$/gi).shift();
     } else {
-      baseSplit = this.getBaseUrl() + this.options.src.split(/([^\/]*)$/gi).shift()
+      baseSplit = this.getBaseUrl() + this.options.src.split(/([^\/]*)$/gi).shift();
     }
 
-    vttImageDef = this.getFullyQualifiedUrl(vttImageDef, baseSplit)
+    vttImageDef = this.getFullyQualifiedUrl(vttImageDef, baseSplit);
 
     if (!vttImageDef.match(/#xywh=/i)) {
-      cssObj.background = 'url("' + vttImageDef + '")'
-      return cssObj
+      cssObj.background = 'url("' + vttImageDef + '")';
+      return cssObj;
     }
 
-    const imageProps = this.getPropsFromDef(vttImageDef)
-    cssObj.background = 'url("' + imageProps.image + '") no-repeat -' + imageProps.x + 'px -' + imageProps.y + 'px'
-    cssObj.width = imageProps.w + 'px'
-    cssObj.height = imageProps.h + 'px'
+    const imageProps = this.getPropsFromDef(vttImageDef);
+    cssObj.background = 'url("' + imageProps.image + '") no-repeat -' + imageProps.x + 'px -' + imageProps.y + 'px';
+    cssObj.width = imageProps.w + 'px';
+    cssObj.height = imageProps.h + 'px';
 
-    return cssObj
+    return cssObj;
   }
 
   doconstructTimestamp (timestamp) {
-    const splitStampMilliseconds = timestamp.split('.')
-    const timeParts = splitStampMilliseconds[0]
-    const timePartsSplit = timeParts.split(':')
+    const splitStampMilliseconds = timestamp.split('.');
+    const timeParts = splitStampMilliseconds[0];
+    const timePartsSplit = timeParts.split(':');
     return {
       milliseconds: parseInt(splitStampMilliseconds[1]) || 0,
       seconds: parseInt(timePartsSplit.pop()) || 0,
       minutes: parseInt(timePartsSplit.pop()) || 0,
       hours: parseInt(timePartsSplit.pop()) || 0,
-    }
+    };
 
   }
 
   getSecondsFromTimestamp (timestamp) {
-    const timestampParts = this.doconstructTimestamp(timestamp)
+    const timestampParts = this.doconstructTimestamp(timestamp);
     return parseInt((timestampParts.hours * (60 * 60)) +
       (timestampParts.minutes * 60) +
       timestampParts.seconds +
-      (timestampParts.milliseconds / 1000))
+      (timestampParts.milliseconds / 1000));
   }
 
   trim (str, charlist) {
@@ -396,36 +397,36 @@ class vttThumbnailsPlugin {
       '\u2028',
       '\u2029',
       '\u3000'
-    ].join('')
-    let l = 0
-    let i = 0
-    str += ''
+    ].join('');
+    let l = 0;
+    let i = 0;
+    str += '';
     if (charlist) {
-      whitespace = (charlist + '').replace(/([[\]().?/*{}+$^:])/g, '$1')
+      whitespace = (charlist + '').replace(/([[\]().?/*{}+$^:])/g, '$1');
     }
     l = str.length
     for (i = 0; i < l; i++) {
       if (whitespace.indexOf(str.charAt(i)) === -1) {
-        str = str.substring(i)
-        break
+        str = str.substring(i);
+        break;
       }
     }
     l = str.length
     for (i = l - 1; i >= 0; i--) {
       if (whitespace.indexOf(str.charAt(i)) === -1) {
-        str = str.substring(0, i + 1)
-        break
+        str = str.substring(0, i + 1);
+        break;
       }
     }
-    return whitespace.indexOf(str.charAt(0)) === -1 ? str : ''
+    return whitespace.indexOf(str.charAt(0)) === -1 ? str : '';
   }
 
 }
 
 // Register the plugin with video.js.
-registerPlugin('vttThumbnails', vttThumbnails)
+registerPlugin('vttThumbnails', vttThumbnails);
 
 // Include the version number.
-vttThumbnails.VERSION = VERSION
+vttThumbnails.VERSION = VERSION;
 
-export default vttThumbnails
+export default vttThumbnails;
