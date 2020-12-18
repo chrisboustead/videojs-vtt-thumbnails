@@ -5,25 +5,18 @@
  * These modules DO NOT include their dependencies as we expect those to be
  * handled by the module system.
  */
-import babel from '@rollup/plugin-babel';
-import json from '@rollup/plugin-json';
+import babel from 'rollup-plugin-babel';
+import json from 'rollup-plugin-json';
 
 export default {
+  name: 'videojsVttThumbnails',
   input: 'src/plugin.js',
   output: [{
-    name: 'videojsVttThumbnails',
     file: 'dist/videojs-vtt-thumbnails.cjs.js',
-    format: 'cjs',
-    globals: {
-      'video.js': 'videojs'
-    }
+    format: 'cjs'
   }, {
-    name: 'videojsVttThumbnails',
     file: 'dist/videojs-vtt-thumbnails.es.js',
-    format: 'es',
-    globals: {
-      'video.js': 'videojs'
-    }
+    format: 'es'
   }],
   external: [
     'global',
@@ -31,19 +24,23 @@ export default {
     'global/window',
     'video.js'
   ],
+  globals: {
+    'video.js': 'videojs'
+  },
   plugins: [
     json(),
     babel({
       babelrc: false,
       exclude: 'node_modules/**',
       presets: [
-        ['@babel/preset-env', {
+        ['es2015', {
           loose: true,
           modules: false
         }]
       ],
       plugins: [
-        '@babel/transform-object-assign'
+        'external-helpers',
+        'transform-object-assign'
       ]
     })
   ]
