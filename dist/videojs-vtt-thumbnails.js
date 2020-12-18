@@ -138,8 +138,12 @@ var classCallCheck = function (instance, Constructor) {
 };
 
 // import request from 'request';
+
 // Default options for the plugin.
 var defaults = {};
+
+// Cache for image elements
+var cache = {};
 
 // Cross-compatibility for Video.js 5 and 6.
 var registerPlugin = videojs.registerPlugin || videojs.plugin;
@@ -161,6 +165,7 @@ var registerPlugin = videojs.registerPlugin || videojs.plugin;
  */
 var onPlayerReady = function onPlayerReady(player, options) {
   player.addClass('vjs-vtt-thumbnails');
+  // eslint-disable-next-line new-cap, no-use-before-define
   player.vttThumbnails = new vttThumbnailsPlugin(player, options);
 };
 
@@ -226,10 +231,16 @@ var vttThumbnailsPlugin = function () {
   };
 
   vttThumbnailsPlugin.prototype.resetPlugin = function resetPlugin() {
-    this.thumbnailHolder && this.thumbnailHolder.parentNode.removeChild(this.thumbnailHolder);
-    this.progressBar && this.progressBar.removeEventListener('mouseenter', this.registeredEvents.progressBarMouseEnter);
-    this.progressBar && this.progressBar.removeEventListener('mouseleave', this.registeredEvents.progressBarMouseLeave);
-    this.progressBar && this.progressBar.removeEventListener('mousemove', this.registeredEvents.progressBarMouseMove);
+    if (this.thumbnailHolder) {
+      this.thumbnailHolder.parentNode.removeChild(this.thumbnailHolder);
+    }
+
+    if (this.progressBar) {
+      this.progressBar.removeEventListener('mouseenter', this.registeredEvents.progressBarMouseEnter);
+      this.progressBar.removeEventListener('mouseleave', this.registeredEvents.progressBarMouseLeave);
+      this.progressBar.removeEventListener('mousemove', this.registeredEvents.progressBarMouseMove);
+    }
+
     delete this.registeredEvents.progressBarMouseEnter;
     delete this.registeredEvents.progressBarMouseLeave;
     delete this.registeredEvents.progressBarMouseMove;
@@ -254,8 +265,10 @@ var vttThumbnailsPlugin = function () {
     if (!this.options.src) {
       return;
     }
+
     var baseUrl = this.getBaseUrl();
     var url = this.getFullyQualifiedUrl(this.options.src, baseUrl);
+
     this.getVttFile(url).then(function (data) {
       _this2.vttData = _this2.processVtt(data);
       _this2.setupThumbnailElement();
@@ -265,19 +278,27 @@ var vttThumbnailsPlugin = function () {
   /**
    * Builds a base URL should we require one.
    *
-   * @returns {string}
+   * @return {string}
    */
 
 
   vttThumbnailsPlugin.prototype.getBaseUrl = function getBaseUrl() {
-    return [window.location.protocol, '//', window.location.hostname, window.location.port ? ':' + window.location.port : '', window.location.pathname].join('').split(/([^\/]*)$/gi).shift();
+    return [
+    // eslint-disable-next-line no-undef
+    window.location.protocol, '//',
+    // eslint-disable-next-line no-undef
+    window.location.hostname,
+    // eslint-disable-next-line no-undef
+    window.location.port ? ':' + window.location.port : '',
+    // eslint-disable-next-line no-undef
+    window.location.pathname].join('').split(/([^\/]*)$/gi).shift();
   };
 
   /**
    * Grabs the contents of the VTT file.
    *
    * @param url
-   * @returns {Promise}
+   * @return {Promise}
    */
 
 
@@ -285,12 +306,16 @@ var vttThumbnailsPlugin = function () {
     var _this3 = this;
 
     return new Promise(function (resolve, reject) {
+      // eslint-disable-next-line no-undef
       var req = new XMLHttpRequest();
+
       req.data = {
         resolve: resolve
       };
+
       req.addEventListener('load', _this3.vttFileLoaded);
       req.open('GET', url);
+      req.overrideMimeType('text/plain; charset=utf-8');
       req.send();
     });
   };
@@ -307,21 +332,32 @@ var vttThumbnailsPlugin = function () {
   vttThumbnailsPlugin.prototype.setupThumbnailElement = function setupThumbnailElement(data) {
     var _this4 = this;
 
-    var mouseDisplay = this.player.$('.vjs-mouse-display');
-    this.progressBar = this.player.$('.vjs-progress-holder');
+    var mouseDisplay = null;
+
+    if (!this.options.showTimestamp) {
+      mouseDisplay = this.player.$('.vjs-mouse-display');
+    }
+
+    // eslint-disable-next-line no-undef
     var thumbHolder = document.createElement('div');
+
     thumbHolder.setAttribute('class', 'vjs-vtt-thumbnail-display');
+    this.progressBar = this.player.$('.vjs-progress-holder');
     this.progressBar.appendChild(thumbHolder);
     this.thumbnailHolder = thumbHolder;
-    if (mouseDisplay) {
+
+    if (mouseDisplay && !this.options.showTimestamp) {
       mouseDisplay.classList.add('vjs-hidden');
     }
+
     this.registeredEvents.progressBarMouseEnter = function () {
       return _this4.onBarMouseenter();
     };
+
     this.registeredEvents.progressBarMouseLeave = function () {
       return _this4.onBarMouseleave();
     };
+
     this.progressBar.addEventListener('mouseenter', this.registeredEvents.progressBarMouseEnter);
     this.progressBar.addEventListener('mouseleave', this.registeredEvents.progressBarMouseLeave);
   };
@@ -332,6 +368,7 @@ var vttThumbnailsPlugin = function () {
     this.mouseMoveCallback = function (e) {
       _this5.onBarMousemove(e);
     };
+
     this.registeredEvents.progressBarMouseMove = this.mouseMoveCallback;
     this.progressBar.addEventListener('mousemove', this.registeredEvents.progressBarMouseMove);
     this.showThumbnailHolder();
@@ -341,12 +378,16 @@ var vttThumbnailsPlugin = function () {
     if (this.registeredEvents.progressBarMouseMove) {
       this.progressBar.removeEventListener('mousemove', this.registeredEvents.progressBarMouseMove);
     }
+
     this.hideThumbnailHolder();
   };
 
   vttThumbnailsPlugin.prototype.getXCoord = function getXCoord(bar, mouseX) {
     var rect = bar.getBoundingClientRect();
+    // eslint-disable-next-line no-undef
     var docEl = document.documentElement;
+
+    // eslint-disable-next-line no-undef
     return mouseX - (rect.left + (window.pageXOffset || docEl.scrollLeft || 0));
   };
 
@@ -357,7 +398,17 @@ var vttThumbnailsPlugin = function () {
   vttThumbnailsPlugin.prototype.getStyleForTime = function getStyleForTime(time) {
     for (var i = 0; i < this.vttData.length; ++i) {
       var item = this.vttData[i];
+
       if (time >= item.start && time < item.end) {
+        // Cache miss
+        if (item.css.url && !cache[item.css.url]) {
+          // eslint-disable-next-line no-undef
+          var image = new Image();
+
+          image.src = item.css.url;
+          cache[item.css.url] = image;
+        }
+
         return item.css;
       }
     }
@@ -380,11 +431,12 @@ var vttThumbnailsPlugin = function () {
       return this.hideThumbnailHolder();
     }
 
-    var thumbnailWidth = parseInt(currentStyle.width);
     var xPos = percent * width;
+    var thumbnailWidth = parseInt(currentStyle.width, 10);
     var halfthumbnailWidth = thumbnailWidth >> 1;
     var marginRight = width - (xPos + halfthumbnailWidth);
     var marginLeft = xPos - halfthumbnailWidth;
+
     if (marginLeft > 0 && marginRight > 0) {
       this.thumbnailHolder.style.transform = 'translateX(' + (xPos - halfthumbnailWidth) + 'px)';
     } else if (marginLeft <= 0) {
@@ -396,6 +448,7 @@ var vttThumbnailsPlugin = function () {
     if (this.lastStyle && this.lastStyle === currentStyle) {
       return;
     }
+
     this.lastStyle = currentStyle;
 
     for (var style in currentStyle) {
@@ -431,6 +484,7 @@ var vttThumbnailsPlugin = function () {
         });
       }
     });
+
     return processedVtts;
   };
 
@@ -439,11 +493,13 @@ var vttThumbnailsPlugin = function () {
       // We have a fully qualified path.
       return path;
     }
+
     if (base.indexOf('//') === 0) {
       // We don't have a fully qualified path, but need to
       // be careful with trimming.
       return [base.replace(/\/$/gi, ''), this.trim(path, '/')].join('/');
     }
+
     if (base.indexOf('//') > 0) {
       // We don't have a fully qualified path, and should
       // trim both sides of base and path.
@@ -459,6 +515,7 @@ var vttThumbnailsPlugin = function () {
     var imageUrl = imageDefSplit[0];
     var imageCoords = imageDefSplit[1];
     var splitCoords = imageCoords.match(/[0-9]+/gi);
+
     return {
       x: splitCoords[0],
       y: splitCoords[1],
@@ -469,11 +526,11 @@ var vttThumbnailsPlugin = function () {
   };
 
   vttThumbnailsPlugin.prototype.getVttCss = function getVttCss(vttImageDef) {
-
     var cssObj = {};
 
     // If there isn't a protocol, use the VTT source URL.
     var baseSplit = void 0;
+
     if (this.options.src.indexOf('//') >= 0) {
       baseSplit = this.options.src.split(/([^\/]*)$/gi).shift();
     } else {
@@ -488,34 +545,64 @@ var vttThumbnailsPlugin = function () {
     }
 
     var imageProps = this.getPropsFromDef(vttImageDef);
+
     cssObj.background = 'url("' + imageProps.image + '") no-repeat -' + imageProps.x + 'px -' + imageProps.y + 'px';
     cssObj.width = imageProps.w + 'px';
     cssObj.height = imageProps.h + 'px';
+    cssObj.url = imageProps.image;
 
     return cssObj;
   };
 
-  vttThumbnailsPlugin.prototype.doconstructTimestamp = function doconstructTimestamp(timestamp) {
+  /**
+   * deconstructTimestamp deconstructs a VTT timestamp
+   *
+   * @param  {string} timestamp VTT timestamp
+   * @return {Object}           deconstructed timestamp
+   */
+
+
+  vttThumbnailsPlugin.prototype.deconstructTimestamp = function deconstructTimestamp(timestamp) {
     var splitStampMilliseconds = timestamp.split('.');
     var timeParts = splitStampMilliseconds[0];
     var timePartsSplit = timeParts.split(':');
+
     return {
-      milliseconds: parseInt(splitStampMilliseconds[1]) || 0,
-      seconds: parseInt(timePartsSplit.pop()) || 0,
-      minutes: parseInt(timePartsSplit.pop()) || 0,
-      hours: parseInt(timePartsSplit.pop()) || 0
+      milliseconds: parseInt(splitStampMilliseconds[1], 10) || 0,
+      seconds: parseInt(timePartsSplit.pop(), 10) || 0,
+      minutes: parseInt(timePartsSplit.pop(), 10) || 0,
+      hours: parseInt(timePartsSplit.pop(), 10) || 0
     };
   };
 
+  /**
+   * getSecondsFromTimestamp
+   *
+   * @param  {string} timestamp VTT timestamp
+   * @return {number}           timestamp in seconds
+   */
+
+
   vttThumbnailsPlugin.prototype.getSecondsFromTimestamp = function getSecondsFromTimestamp(timestamp) {
-    var timestampParts = this.doconstructTimestamp(timestamp);
-    return parseInt(timestampParts.hours * (60 * 60) + timestampParts.minutes * 60 + timestampParts.seconds + timestampParts.milliseconds / 1000);
+    var timestampParts = this.deconstructTimestamp(timestamp);
+
+    return parseInt(timestampParts.hours * (60 * 60) + timestampParts.minutes * 60 + timestampParts.seconds + timestampParts.milliseconds / 1000, 10);
   };
+
+  /**
+   * trim
+   *
+   * @param  {string} str      source string
+   * @param  {string} charlist characters to trim from text
+   * @return {string}          trimmed string
+   */
+
 
   vttThumbnailsPlugin.prototype.trim = function trim(str, charlist) {
     var whitespace = [' ', '\n', '\r', '\t', '\f', '\x0b', '\xa0', '\u2000', '\u2001', '\u2002', '\u2003', '\u2004', '\u2005', '\u2006', '\u2007', '\u2008', '\u2009', '\u200A', '\u200B', '\u2028', '\u2029', '\u3000'].join('');
     var l = 0;
     var i = 0;
+
     str += '';
     if (charlist) {
       whitespace = (charlist + '').replace(/([[\]().?/*{}+$^:])/g, '$1');
