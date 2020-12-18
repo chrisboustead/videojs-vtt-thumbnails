@@ -312,7 +312,7 @@ class vttThumbnailsPlugin {
     const processedVtts = [];
 
     data = data.replaceAll('\r\n', '\n');
-    
+
     const vttDefinitions = data.split(/[\r\n][\r\n]/i);
 
     vttDefinitions.forEach((vttDef) => {

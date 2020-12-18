@@ -323,11 +323,7 @@
       var _this6 = this;
 
       var processedVtts = [];
-
-      if (data.match(/\r\n/i)) {
-        data = data.replace('\r\n', '\n');
-      }
-
+      data = data.replaceAll('\r\n', '\n');
       var vttDefinitions = data.split(/[\r\n][\r\n]/i);
       vttDefinitions.forEach(function (vttDef) {
         if (vttDef.match(/([0-9]{2}:)?([0-9]{2}:)?[0-9]{2}(.[0-9]{3})?( ?--> ?)([0-9]{2}:)?([0-9]{2}:)?[0-9]{2}(.[0-9]{3})?[\r\n]{1}.*/gi)) {
