@@ -191,7 +191,7 @@ class vttThumbnailsPlugin {
     const thumbHolder = document.createElement('div');
 
     thumbHolder.setAttribute('class', 'vjs-vtt-thumbnail-display');
-    this.progressBar = this.player.$('.vjs-progress-control');
+    this.progressBar = this.player.$('.vjs-progress-holder');
     this.progressBar.appendChild(thumbHolder);
     this.thumbnailHolder = thumbHolder;
 
@@ -310,6 +310,9 @@ class vttThumbnailsPlugin {
 
   processVtt(data) {
     const processedVtts = [];
+
+    data = data.replaceAll('\r\n', '\n');
+
     const vttDefinitions = data.split(/[\r\n][\r\n]/i);
 
     vttDefinitions.forEach((vttDef) => {
