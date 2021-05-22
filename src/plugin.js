@@ -1,5 +1,5 @@
 import videojs from 'video.js';
-import { version as VERSION } from '../package.json';
+import packageInfo from '../package.json';
 // import request from 'request';
 
 // Default options for the plugin.
@@ -502,6 +502,6 @@ class vttThumbnailsPlugin {
 registerPlugin('vttThumbnails', vttThumbnails);
 
 // Include the version number.
-vttThumbnails.VERSION = VERSION;
+vttThumbnails.VERSION = packageInfo.version;
 
 export default vttThumbnails;
