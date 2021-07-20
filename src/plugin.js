@@ -161,7 +161,11 @@ class vttThumbnailsPlugin {
     return new Promise((resolve, reject) => {
       // eslint-disable-next-line no-undef
       const req = new XMLHttpRequest();
-
+      
+      if(this.options.withCredentials) {
+        req.withCredentials = true;  
+      }
+      
       req.data = {
         resolve
       };
