@@ -85,6 +85,7 @@ Options are passed in the same object as the source location.
   var player = videojs('my-video');
   player.vttThumbnails({
     src: 'example/thumbs.vtt',
+    withCredentials: true,
     showTimestamp: true
   });
 ```
