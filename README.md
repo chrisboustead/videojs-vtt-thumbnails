@@ -85,12 +85,14 @@ Options are passed in the same object as the source location.
   var player = videojs('my-video');
   player.vttThumbnails({
     src: 'example/thumbs.vtt',
-    showTimestamp: true
+    showTimestamp: true,
+    useSourceQueryParams: true
   });
 ```
 ### Available Options
 
 - `showTimestamp` (Boolean, Default: false) - Disables the timestamp that is shown on hover.
+- `useSourceQueryParams` (Boolean, Default: false) - Appends query parameters present on the source path to thumbnail image path.
 
 ## License
 

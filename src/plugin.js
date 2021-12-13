@@ -361,6 +361,21 @@ class vttThumbnailsPlugin {
     return path;
   }
 
+  appendSourceQueryParams(path) {
+    if (this.options.src.indexOf('?') < 0) {
+      // no query params present on source path
+      return path;
+    }
+
+    const queryParams = this.options.src.substring(this.options.src.indexOf('?'));
+
+    if (!path.match(/#xywh=/i)) {
+      return path + queryParams;
+    }
+
+    return path.replace('#xywh', queryParams + '#xywh');
+  }
+
   getPropsFromDef(def) {
     const imageDefSplit = def.split(/#xywh=/i);
     const imageUrl = imageDefSplit[0];
@@ -386,6 +401,10 @@ class vttThumbnailsPlugin {
       baseSplit = this.options.src.split(/([^\/]*)$/gi).shift();
     } else {
       baseSplit = this.getBaseUrl() + this.options.src.split(/([^\/]*)$/gi).shift();
+    }
+
+    if (this.options.useSourceQueryParams) {
+      vttImageDef = this.appendSourceQueryParams(vttImageDef);
     }
 
     vttImageDef = this.getFullyQualifiedUrl(vttImageDef, baseSplit);
