@@ -431,8 +431,9 @@ class vttThumbnailsPlugin {
    * @param  {string} timestamp VTT timestamp
    * @return {number}           timestamp in milliseconds
    */
-  getMillisecondsFromTimestamp (timestamp) {
-    const timestampParts = this.doconstructTimestamp(timestamp)
+  getMillisecondsFromTimestamp(timestamp) {
+    const timestampParts = this.deconstructTimestamp(timestamp);
+
     return (timestampParts.hours * (60 * 60)) +
       (timestampParts.minutes * 60) +
       timestampParts.seconds +
