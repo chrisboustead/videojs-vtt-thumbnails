@@ -323,8 +323,8 @@ class vttThumbnailsPlugin {
         const vttCssDef = this.getVttCss(vttImageDef);
 
         processedVtts.push({
-          start: this.getSecondsFromTimestamp(vttTimeStart),
-          end: this.getSecondsFromTimestamp(vttTimeEnd),
+          start: this.getMillisecondsFromTimestamp(vttTimeStart),
+          end: this.getMillisecondsFromTimestamp(vttTimeEnd),
           css: vttCssDef
         });
       }
@@ -426,18 +426,17 @@ class vttThumbnailsPlugin {
   }
 
   /**
-   * getSecondsFromTimestamp
+   * getMillisecondsFromTimestamp
    *
    * @param  {string} timestamp VTT timestamp
-   * @return {number}           timestamp in seconds
+   * @return {number}           timestamp in milliseconds
    */
-  getSecondsFromTimestamp(timestamp) {
-    const timestampParts = this.deconstructTimestamp(timestamp);
-
-    return parseInt((timestampParts.hours * (60 * 60)) +
+  getMillisecondsFromTimestamp (timestamp) {
+    const timestampParts = this.doconstructTimestamp(timestamp)
+    return (timestampParts.hours * (60 * 60)) +
       (timestampParts.minutes * 60) +
       timestampParts.seconds +
-      (timestampParts.milliseconds / 1000), 10);
+      (timestampParts.milliseconds / 1000);
   }
 
   /**
